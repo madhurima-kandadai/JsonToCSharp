@@ -1,6 +1,17 @@
 ﻿app.controller('jsonController', function ($http, $scope) {
 
-    $scope.models = [];
+    $scope.models = [
+        {
+            "modelName": "",
+            "required": [{}],
+            "properties":
+                    [{
+                        "propertyName": "",
+                        "type": "",
+                        "required": ""
+                    }]
+        }
+    ];
 
     $scope.dataTypes = [{
         value: 'int',
@@ -17,6 +28,10 @@
     ];
 
     $scope.SaveModelDetails = function () {
+
+    };
+
+    $scope.AddPropertyToModel = function () {
 
     };
 
