@@ -1,6 +1,4 @@
-﻿@{
-    ViewBag.Title = "Main";
-}
+﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
 <script src="~/Scripts/AppScripts/jsonController.js"></script>
 
 <h3>Welcome</h3>
@@ -55,9 +53,14 @@
         </tbody>
     </table>
     <div>
-        <button style="padding-top:5px" ng-show="models.length > 0" ng-click="ViewJson()">Show Json</button>
+        @*<button style="padding-top:5px" ng-show="models.length > 0" ng-click="ViewJson()">Show Json</button>*@
+        <button style="padding-top:5px" ng-show="models.length > 0" ng-click="SwaggerJsonGeneration()">Show Json</button>
     </div>
     <div>
         <pre ng-show="jsonObject">{{jsonObject}}</pre>
+    </div>
+    <div ng-show="swaggerEditorJson">
+        Swagger Json
+        <pre>{{swaggerEditorJson}}</pre>
     </div>
 </div>

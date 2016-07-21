@@ -1,6 +1,7 @@
 ﻿app.controller('jsonController', function ($scope, $http) {
 
     $scope.swaggerJson = [];
+    $scope.swaggerEditorJson = [];
     $scope.models = [];
 
     $scope.dataTypes = [{
@@ -24,6 +25,34 @@
             $scope.jsonObject = JSON.stringify($scope.swaggerJson, null, 2);
             console.log($scope.jsonObject);
         }
+    };
+
+    $scope.SwaggerJsonGeneration = function () {
+        debugger;
+        $scope.swaggerEditorJson = [];
+        angular.forEach($scope.models, function (model) {
+            var index = $scope.swaggerEditorJson.length;
+            $scope.swaggerEditorJson.push({
+                    [model.model]:
+                        {
+                            "type": "object",
+                            "required": [],
+                            "properties": []
+                        }
+            });
+            //var required = _.where(model.properties, { required: true });
+            //var requiredFields = _.where(model.properties, {required: true});
+            angular.forEach(model.properties, function (property) {
+                var propertyscript = '$scope.swaggerEditorJson[index].' + model.model + '.properties.push({ [property.name]: { "type": property.dataType } });';
+                eval(propertyscript);
+                if (property.required === true) {
+                    var requiredScript = '$scope.swaggerEditorJson[index].' + model.model + '.required.push(property.name);';
+                    eval(requiredScript);
+                }
+            });
+        });
+        console.log(JSON.stringify($scope.swaggerEditorJson, null, 2));
+        $scope.swaggerEditorJson = JSON.stringify($scope.swaggerEditorJson, null, 2);
     };
 
     $scope.GenerateJson = function () {
