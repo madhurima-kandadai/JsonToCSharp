@@ -5,11 +5,18 @@
 
 <h3>Welcome</h3>
 <div ng-controller="jsonController">
+    <div>
+        List of Models Created :
+        <ul>
+            <li ng-repeat="model in models"><a> {{model.model}}</a></li>
+        </ul>
+    </div>
+
     <table cellpadding="3" cellspacing="15" style="border-spacing:12px">
         <tr>
             <td>Model name : </td>
             <td><input type="text" ng-model="modelName" placeholder="Enter model name" /></td>
-        </tr>
+        </tr>        
         <tr>
             <td style="margin-top:10px">Property Name :</td>
             <td style="margin-top:10px"><input type="text" ng-model="propertyName" placeholder="Enter property name" /></td>
@@ -24,6 +31,15 @@
             </td>
         </tr>
         <tr>
+            <td style="margin-top:10px"> Property Type : </td>
+            <td style="margin-top:10px">
+                <select ng-model="propertyType">
+                    <option value="">Select</option>
+                    <option ng-repeat="type in modelTypes" value="{{type.value}}">{{type.name}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
             <td> Required :</td>
             <td><input type="checkbox" ng-model="required" /></td>
         </tr>
@@ -31,14 +47,15 @@
             <td rowspan="2"><button class="btn btn-default" ng-click="AddPropertyToModel()" ng-disabled="(modelName && propertyName && dataType) ?  false : true ">Add</button></td>
         </tr>
     </table>
-    <table border="1" cellpadding="1" cellspacing="2" style="width:100%" ng-repeat="model in models">
+    <table border="1" cellpadding="1" cellspacing="2" style="width:120%" ng-repeat="model in models">
         <thead>
             <tr>
                 <th>Model Name : {{model.model}}</th>
             </tr>
             <tr>
                 <th style="width:20%">Property Name</th>
-                <th style="width:20%">Type</th>
+                <th style="width:20%">Data Type</th>
+                <th style="width:20%">Property Type</th>
                 <th style="width:20%">Required</th>
                 <th style="width:20%"></th>
                 <th style="width:20%"></th>
@@ -48,6 +65,7 @@
             <tr ng-repeat="prop in model.properties">
                 <td>{{prop.name}}</td>
                 <td>{{prop.dataType}}</td>
+                <td>{{prop.propertyType}}</td>
                 <td>{{prop.required}}</td>
                 <td><button>Edit</button> </td>
                 <td><button> Delete</button> </td>
@@ -62,7 +80,6 @@
         <pre ng-show="jsonObject">{{jsonObject}}</pre>
     </div>
     <div ng-show="swaggerEditorJson">
-        Swagger Json
         <pre>{{swaggerEditorJson}}</pre>
     </div>
 </div>
