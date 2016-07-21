@@ -3,6 +3,7 @@
     $scope.swaggerJson = [];
     $scope.swaggerEditorJson = [];
     $scope.models = [];
+    $scope.tableViewModels = [];
 
     $scope.modelTypes = [{
         value: 'object',
@@ -30,9 +31,10 @@
 
     $scope.SwaggerJsonGeneration = function () {
         debugger;
+        var index = 0;
         $scope.swaggerEditorJson = [];
         angular.forEach($scope.models, function (model) {
-            var index = $scope.swaggerEditorJson.length;
+            index = $scope.swaggerEditorJson.length;
             $scope.swaggerEditorJson.push({
                     [model.model]:
                         {
@@ -44,7 +46,7 @@
             //var required = _.where(model.properties, { required: true });
             //var requiredFields = _.where(model.properties, {required: true});
             angular.forEach(model.properties, function (property) {
-                var propertyscript = '$scope.swaggerEditorJson[index].' + model.model + '.properties.push({ [property.name]: { "dataType": property.dataType }, {"type": property.propertyType} });';
+                var propertyscript = '$scope.swaggerEditorJson[index].' + model.model + '.properties.push({ [property.name]: { "dataType": property.dataType , "type": property.propertyType} });';
                 eval(propertyscript);
                 if (property.required === true) {
                     var requiredScript = '$scope.swaggerEditorJson[index].' + model.model + '.required.push(property.name);';
@@ -56,19 +58,21 @@
         $scope.swaggerEditorJson = JSON.stringify($scope.swaggerEditorJson, null, 2);
     };
 
-    $scope.EditProperty = function () {
-
+    $scope.GetModel = function (model) {
+        $scope.tableViewModels = [];
+        var index = $scope.models.findIndex(x => x.model.toLowerCase() == model.model.toLowerCase());
+        $scope.tableViewModels.push($scope.models[index]);
     };
 
-    $scope.DeleteProperty = function () {
+    $scope.DeleteProperty = function (model) {
 
-    }
+    };
 
     $scope.AddPropertyToModel = function () {
         if (JSON.stringify($scope.models).indexOf(JSON.stringify($scope.modelName)) == -1) {
             $scope.dataTypes.push({ value: $scope.modelName, name: $scope.modelName })
             $scope.models.push({
-                "model": $scope.modelName,                
+                "model": $scope.modelName,
                 "properties": [{
                     "name": $scope.propertyName,
                     "type": $scope.propertyType,
@@ -95,8 +99,10 @@
             }
 
         }
+        $scope.tableViewModels = $scope.models;
         $scope.propertyName = '';
         $scope.dataType = "";
+        $scope.propertyType = '';
         $scope.required = null;
     };
 });
