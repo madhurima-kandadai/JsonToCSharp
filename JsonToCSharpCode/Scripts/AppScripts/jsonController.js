@@ -10,22 +10,26 @@
         name: 'Object'
     },
     {
-        value: 'list',
-        name: 'List'
+        value: 'array',
+        name: 'List',
+        type: 'primary'
     }
     ];
 
     $scope.dataTypes = [{
         value: 'int',
-        name: 'Integer'
+        name: 'Integer',
+        type: 'primary'
     },
     {
         value: 'string',
-        name: 'String'
+        name: 'String',
+        type: 'primary'
     },
     {
         value: 'DateTime',
-        name: 'Date Time'
+        name: 'Date Time',
+        type: 'primary'
     }
     ];
 
@@ -42,11 +46,16 @@
                             "properties": []
                         }
             });
-            //var required = _.where(model.properties, { required: true });
-            //var requiredFields = _.where(model.properties, {required: true});
             angular.forEach(model.properties, function (property) {
-                var propertyscript = '$scope.swaggerEditorJson[index].' + model.model + '.properties.push({ [property.name]: { "dataType": property.dataType , "type": property.propertyType} });';
-                eval(propertyscript);
+                if (property.dataTypeType == 'primary') {
+                    var propertyscript = '$scope.swaggerEditorJson[index].' + model.model + '.properties.push({ [property.name]: {  "type": property.type,"items" : { "type": property.dataType }} });';
+                    eval(propertyscript);
+                }
+                else if (property.dataTypeType == 'secondary') {
+                    var propertyscript = '$scope.swaggerEditorJson[index].' + model.model + '.properties.push({ [property.name]: { "type": property.type, "items" : { "$ref": property.dataType }} });';
+                    eval(propertyscript);
+                }
+
                 if (property.required === true) {
                     var requiredScript = '$scope.swaggerEditorJson[index].' + model.model + '.required.push(property.name);';
                     eval(requiredScript);
@@ -74,13 +83,18 @@
 
     $scope.AddPropertyToModel = function () {
         if (JSON.stringify($scope.models).indexOf(JSON.stringify($scope.modelName)) == -1) {
-            $scope.dataTypes.push({ value: $scope.modelName, name: $scope.modelName })
+            $scope.dataTypes.push({
+                value: "#/definitions/" + $scope.modelName,
+                name: $scope.modelName,
+                type: 'secondary'
+            });
             $scope.models.push({
                 "model": $scope.modelName,
                 "properties": [{
                     "name": $scope.propertyName,
                     "type": $scope.propertyType,
-                    "dataType": $scope.dataType,
+                    "dataTypeType": jQuery.parseJSON($scope.dataType).type,
+                    "dataType": jQuery.parseJSON($scope.dataType).value,
                     "required": $scope.required == null ? false : $scope.required
                 }]
             });
@@ -88,12 +102,14 @@
         else {
             var index = $scope.models.findIndex(x => x.model.toLowerCase() == $scope.modelName.toLowerCase());
             if (index != -1) {
+                debugger;
                 var propIndex = $scope.models[index].properties.findIndex(x => x.name.toLowerCase() == $scope.propertyName.toLowerCase());
                 if (propIndex == -1) {
                     $scope.models[index].properties.push({
                         "name": $scope.propertyName,
                         "type": $scope.propertyType,
-                        "dataType": $scope.dataType,
+                        "dataTypeType": jQuery.parseJSON($scope.dataType).type,
+                        "dataType": jQuery.parseJSON($scope.dataType).value,
                         "required": $scope.required == null ? false : $scope.required
                     });
                 }
@@ -101,7 +117,6 @@
                     alert("Duplicate property !~!!");
                 }
             }
-
         }
         $scope.tableViewModels = $scope.models;
         $scope.propertyName = '';
