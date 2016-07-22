@@ -30,7 +30,6 @@
     ];
 
     $scope.SwaggerJsonGeneration = function () {
-        debugger;
         var index = 0;
         $scope.swaggerEditorJson = [];
         angular.forEach($scope.models, function (model) {
@@ -64,8 +63,13 @@
         $scope.tableViewModels.push($scope.models[index]);
     };
 
-    $scope.DeleteProperty = function (model) {
-
+    $scope.DeleteProperty = function (modelname, hashkey, propertyName) {
+        $scope.tableViewModels = [];
+        var index = $scope.models.findIndex(x => x.model.toLowerCase() == modelname.toLowerCase());
+        $scope.models[index].properties = jQuery.grep($scope.models[index].properties, function (obj) {
+            return obj.name != propertyName;
+        });
+        $scope.tableViewModels.push($scope.models[index]);
     };
 
     $scope.AddPropertyToModel = function () {
